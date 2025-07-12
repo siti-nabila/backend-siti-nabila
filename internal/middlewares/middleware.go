@@ -33,8 +33,13 @@ func RoleAuthorization(userService domain.UserService, allowedRoles ...int) fibe
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "invalid token claims"})
 		}
 
-		userId := claims["user_id"].(int)
+		userIdFloat, ok := claims["user_id"].(float64)
+		if !ok {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "invalid user_id in token"})
+		}
+		userId := int(userIdFloat)
 
+		c.Locals("user_id", userId)
 		user, err := userService.GetUserByUserId(userId)
 		if err != nil {
 			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "failed to get role"})

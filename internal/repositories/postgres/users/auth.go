@@ -1,6 +1,8 @@
 package users
 
 import (
+	"database/sql"
+
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/siti-nabila/backend-siti-nabila/internal/domain"
 	"github.com/siti-nabila/backend-siti-nabila/internal/models"
@@ -25,16 +27,16 @@ func (u *userRepository) Register(request models.RegisterRequest) (result domain
 	stmt, err := tx.Prepare(query)
 	defer stmt.Close()
 	if err != nil {
-		log.Error(err, err.Error())
+		log.Error(err)
 		return result, err
 	}
 
 	err = stmt.QueryRow(request.Email, request.Password, request.RoleId).Scan(
 		&result.UserId,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		tx.Rollback()
-		log.Error(err, err.Error())
+		log.Error(err)
 		return result, err
 	}
 
@@ -53,6 +55,8 @@ func (u *userRepository) Login(request models.LoginReqeust) (result domain.User,
 	`
 
 	stmt, err := u.db.Prepare(query)
+	defer stmt.Close()
+
 	if err != nil {
 		log.Error(err, err.Error())
 		return result, err

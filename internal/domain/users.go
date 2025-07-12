@@ -1,6 +1,9 @@
 package domain
 
-import "github.com/siti-nabila/backend-siti-nabila/internal/models"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/siti-nabila/backend-siti-nabila/internal/models"
+)
 
 type (
 	User struct {
@@ -25,6 +28,6 @@ type UserService interface {
 }
 
 type UserHandler interface {
-	Register() (bool, error)
-	Login() (bool, error)
+	Register(*fiber.Ctx) error
+	Login(*fiber.Ctx) error
 }

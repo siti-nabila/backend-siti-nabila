@@ -35,7 +35,7 @@ func (u *userRepository) GetUserByUserId(userId int) (result domain.User, err er
 	)
 
 	if err != nil {
-		log.Error(err, err.Error())
+		log.Error(err, "user id : ", userId)
 		return result, err
 	}
 

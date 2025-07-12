@@ -1,6 +1,8 @@
 package user
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/siti-nabila/backend-siti-nabila/internal/models"
@@ -50,6 +52,7 @@ func (u *userHandler) Login(c *fiber.Ctx) error {
 		response.ErrorMessage = err.Error()
 		return c.Status(fiber.StatusUnauthorized).JSON(response)
 	}
+	fmt.Println("[login] res : ", res)
 
 	token, err := util.GenerateJWTToken(res.UserId)
 	if err != nil {
